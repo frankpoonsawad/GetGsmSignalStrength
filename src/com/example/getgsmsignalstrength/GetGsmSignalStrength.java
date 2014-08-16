@@ -28,7 +28,7 @@ import android.os.Process;
 
 public class GetGsmSignalStrength extends Activity {
 
-	/* This variables need to be global, so we can used them onResume and onPause method to
+/* These variables need to be global, so we can used them onResume and onPause method to
     stop the listener */
  TelephonyManager        Tel;
  MyPhoneStateListener    MyListener;
@@ -38,26 +38,7 @@ public class GetGsmSignalStrength extends Activity {
  int cellID;
  int lac;
  
- /*
-  * Network type constants
-  */
- public static final String NETWORK_CDMA = "CDMA: Either IS95A or IS95B (2G)";
- public static final String NETWORK_EDGE = "EDGE (2.75G)";
- public static final String NETWORK_GPRS = "GPRS (2.5G)";
- public static final String NETWORK_UMTS = "UMTS (3G)";
- public static final String NETWORK_EVDO_0 = "EVDO revision 0 (3G)";
- public static final String NETWORK_EVDO_A = "EVDO revision A (3G - Transitional)";
- public static final String NETWORK_EVDO_B = "EVDO revision B (3G - Transitional)";
- public static final String NETWORK_1X_RTT = "1xRTT  (2G - Transitional)";
- public static final String NETWORK_HSDPA = "HSDPA (3G - Transitional)";
- public static final String NETWORK_HSUPA = "HSUPA (3G - Transitional)";
- public static final String NETWORK_HSPA = "HSPA (3G - Transitional)";
- public static final String NETWORK_IDEN = "iDen (2G)";
- public static final String NETWORK_LTE = "LTE (4G)";
- public static final String NETWORK_EHRPD = "EHRPD (3G)";
- public static final String NETWORK_HSPAP = "HSPAP (3G)";
- public static final String NETWORK_UNKOWN = "Unknown";
- 
+  
  /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState)
@@ -77,23 +58,21 @@ public class GetGsmSignalStrength extends Activity {
       /*Variables here along with function values*/
       	
    		IMEI = Tel.getDeviceId();
-	   	//net_type = mapNetworkTypeToName(Tel.getNetworkType());
 	   	operator = Tel.getNetworkOperatorName();
 	   	cellID = cellLocation.getCid();
 	    lac = cellLocation.getLac();
 	        		
-	    
+	    /*This text box provides IMEI of the device*/
 	   	TextView dID = (TextView)findViewById(R.id.deviceID);
 	   	dID.setText("The IMEI is "+IMEI);
 	   	
+	   	/*This text box provides Operator name*/
 	   	TextView opr = (TextView)findViewById(R.id.operator);
 	   	opr.setText("The Operator name is "+operator);
 	   	
+	   	/*This text box provides LAC and Cell ID*/
 	   	TextView cal = (TextView)findViewById(R.id.cal);
 	   	cal.setText("The Cell ID is "+ cellID + " & LAC is "+ lac);
-	   	
-	   	TextView network = (TextView) findViewById(R.id.network_type);
-        network.setText("Network Type: " + mapNetworkTypeToName(Tel.getNetworkType()));
 	   	
 	   	TextView Neighbouring = (TextView)findViewById(R.id.neighbouring);
 	    NeighboringList = Tel.getNeighboringCellInfo();
@@ -115,6 +94,7 @@ public class GetGsmSignalStrength extends Activity {
 	         + rssi +"\n";
 	       }
 	       
+	       /*This text box provides NEIGHBOURING cel sites with signal strength*/
 	       Neighbouring.setText(stringNeighboring);
 	       
 	       /*data use */
@@ -137,30 +117,10 @@ public class GetGsmSignalStrength extends Activity {
 					   + appInfo.loadLabel(packageManager)+ "\n";
 			   
 		   } 
-	       
+	       /*PROVIDES LIST OF APPS installed - IGNORE this for now*/
 		   appList.setText(listapp);
 		   
-	       /*Application Data USage Code*/
-	       
-	       TextView appdata = (TextView)findViewById(R.id.datause);
-	       
-	       TrafficStats stats = new TrafficStats();
-	       TrafficStats.getMobileRxBytes();
-	       TrafficStats.getTotalRxBytes();
-	       
-	       int uid = android.os.Process.myUid();
-	       long txBytesInitial = TrafficStats.getUidTxBytes(uid);
-	       long rxBytesInitial = TrafficStats.getUidRxBytes(uid);
-	       
-	       int myUid = Process.myUid();
-		   ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-			
-		   for (RunningAppProcessInfo processInfo : activityManager.getRunningAppProcesses()) {
-				appdata.setText(processInfo.processName + " hase used " + TrafficStats.getUidRxBytes(processInfo.uid) + " bytes");
-			}//Data usage for this app ends here
-		   
-		   
-		  	  
+	      	  	  
 		   
   }
 
@@ -191,6 +151,7 @@ public class GetGsmSignalStrength extends Activity {
     {
        super.onSignalStrengthsChanged(signalStrength);
        
+       /*THIS LOOP PROVIDES THE CURRENT SIGNAL STRENGTH EVERY TIME THE SIGNAL CHANGES*/
        if(signalStrength.getGsmSignalStrength() > 30)
        {
     	   Toast.makeText(getApplicationContext(), "The GSM Arbitrary Signal Unit (ASU) is good= "
@@ -212,45 +173,5 @@ public class GetGsmSignalStrength extends Activity {
 
   };/* End of private Class */
 
-  /**
-   * Returns a string describing the network type.
-   */
-  public static String mapNetworkTypeToName(int networkType) {
 
-      switch (networkType) {
-          case TelephonyManager.NETWORK_TYPE_CDMA:
-              return NETWORK_CDMA;
-          case TelephonyManager.NETWORK_TYPE_EDGE:
-              return NETWORK_EDGE;
-          case TelephonyManager.NETWORK_TYPE_GPRS:
-              return NETWORK_EDGE;
-          case TelephonyManager.NETWORK_TYPE_UMTS:
-              return NETWORK_UMTS;
-          case TelephonyManager.NETWORK_TYPE_EVDO_0:
-              return NETWORK_EVDO_0;
-          case TelephonyManager.NETWORK_TYPE_EVDO_A:
-              return NETWORK_EVDO_A;
-          case TelephonyManager.NETWORK_TYPE_EVDO_B:
-              return NETWORK_EVDO_B;
-          case TelephonyManager.NETWORK_TYPE_1xRTT:
-              return NETWORK_1X_RTT;
-          case TelephonyManager.NETWORK_TYPE_HSDPA:
-              return NETWORK_HSDPA;
-          case TelephonyManager.NETWORK_TYPE_HSPA:
-              return NETWORK_HSPA;
-          case TelephonyManager.NETWORK_TYPE_HSUPA:
-              return NETWORK_HSUPA;
-          case TelephonyManager.NETWORK_TYPE_IDEN:
-              return NETWORK_IDEN;
-          case TelephonyManager.NETWORK_TYPE_LTE:
-              return NETWORK_LTE;
-          case TelephonyManager.NETWORK_TYPE_EHRPD:
-              return NETWORK_EHRPD;
-//          case TelephonyManager.NETWORK_TYPE_HSPAP:
-//              return NETWORK_HSPAP;
-          case TelephonyManager.NETWORK_TYPE_UNKNOWN:
-          default:
-              return NETWORK_UNKOWN;
-      }
-  }
 }
